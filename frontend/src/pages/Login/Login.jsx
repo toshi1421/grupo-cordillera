@@ -38,7 +38,7 @@ const Login = () => {
       <div className="login-card">
         <div className="login-header">
           <h2 className="titulo-corporativo">Grupo Cordillera</h2>
-          <p className="subtitulo-monitoreo">Plataforma de Monitoreo Organizacional</p>
+          <p className="subtitulo-monitoreo">Plataforma de Monitoreo</p>
         </div>
 
         <form className="login-form" onSubmit={manejarLogin}>

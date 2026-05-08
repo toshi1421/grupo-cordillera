@@ -2,7 +2,7 @@ import React from 'react';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  // Aquí se pueden agregar estadísticas e información del admin
+  
   return (
     <div className="dashboard">
       <h1>Dashboard Administrativo</h1>

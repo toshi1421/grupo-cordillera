@@ -24,7 +24,7 @@ const Home = () => {
 
     fetchProductos();
   }, []);
-
+  
   if (loading) {
     return <div className="home"><p>Cargando productos...</p></div>;
   }

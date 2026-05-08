@@ -142,7 +142,8 @@ const Inventario = () => {
         </div>
       )}
 
-      <table className="productos-table">
+      <div className="table-container">
+        <table className="productos-table">
         <thead>
           <tr>
             <th>Nombre</th>
@@ -176,7 +177,8 @@ const Inventario = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+        </table>
+      </div>
     </div>
   );
 };

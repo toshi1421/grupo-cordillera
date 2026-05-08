@@ -110,6 +110,15 @@
   overflow: hidden;
 }
 
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.productos-table {
+  min-width: 700px;
+}
+
 .productos-table thead {
   background-color: #f3f4f6;
 }
