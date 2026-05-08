@@ -1,30 +1,41 @@
 import React, { useState } from 'react';
-import api from '../../api/api'; 
+import { useNavigate } from 'react-router-dom';
+import allowedDomains from '../../config/allowedDomains';
+import api from '../../services/api';
+import authService from '../../services/authService';
 import './Login.css';
 
 const Login = () => {
-  const [usuario, setUsuario] = useState('');
-  const [clave, setClave] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
+
+  const navigate = useNavigate();
 
   const manejarLogin = async (e) => {
     e.preventDefault();
     setError('');
+    if (!email.trim() || !password.trim()) {
+      setError('Por favor, ingresa tu Gmail y contraseña.');
+      return;
+    }
 
-    if (!usuario.trim() || !clave.trim()) {
-      setError('Por favor, ingresa tus credenciales corporativas.');
+    const lower = email.toLowerCase();
+    const valid = allowedDomains.some((d) => lower.endsWith(d));
+    if (!valid) {
+      setError(`Por favor ingresa un correo con uno de los dominios permitidos: ${allowedDomains.join(', ')}`);
       return;
     }
 
     setCargando(true);
 
     try {
-      const respuesta = await api.post('/auth/login', { usuario, clave });
-
-      if (respuesta.data && respuesta.data.token) {
-        localStorage.setItem('token', respuesta.data.token);
-        window.location.href = '/inventario';
+      await authService.login(email, password);
+      if (authService.isAuthenticated()) {
+        navigate('/inventario');
+      } else {
+        setError('Usuario o contraseña incorrectos. Intenta nuevamente.');
       }
     } catch (err) {
       setError('Usuario o contraseña incorrectos. Intenta nuevamente.');
@@ -32,6 +43,7 @@ const Login = () => {
       setCargando(false);
     }
   };
+
 
   return (
     <div className="login-page">
@@ -43,25 +55,25 @@ const Login = () => {
 
         <form className="login-form" onSubmit={manejarLogin}>
           <div className="input-group">
-            <label htmlFor="usuario">Usuario Corporativo</label>
+            <label htmlFor="email">Correo corporativo</label>
             <input
-              id="usuario"
-              type="text"
-              placeholder="nombre.apellido"
-              value={usuario}
-              onChange={(e) => setUsuario(e.target.value)}
+              id="email"
+              type="email"
+              placeholder="nombre@cordillera.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className={error ? 'input-error' : ''}
             />
           </div>
 
           <div className="input-group">
-            <label htmlFor="clave">Contraseña</label>
+            <label htmlFor="password">Contraseña</label>
             <input
-              id="clave"
+              id="password"
               type="password"
-              placeholder="••••••••"
-              value={clave}
-              onChange={(e) => setClave(e.target.value)}
+              placeholder="Ingrese su contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className={error ? 'input-error' : ''}
             />
           </div>
@@ -73,8 +85,9 @@ const Login = () => {
           </button>
         </form>
 
+        
         <footer className="login-footer">
-          <p>¿No tienes acceso? <span className="link">Solicitar Registro</span></p>
+          <p>¿No tienes acceso? <span className="link" onClick={() => navigate('/register')}>Solicitar Registro</span></p>
         </footer> 
       </div>
     </div>

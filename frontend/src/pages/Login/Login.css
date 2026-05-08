@@ -125,3 +125,30 @@
     font-size: 22px;
   }
 }
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 25px 0;
+  color: #8FB3E2;
+  font-weight: 600;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: #8FB3E2;
+}
+
+.google-login-container {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.google-login-container > div {
+  width: 100%;
+}
