@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Verificar si el usuario ya está autenticado al cargar
+ 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     const token = localStorage.getItem('authToken');
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  // Login
+ 
   const login = async (email, password) => {
     try {
       const response = await authService.login(email, password);
@@ -33,14 +33,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout
+ 
   const logout = () => {
     authService.logout();
     setUser(null);
     setIsAuthenticated(false);
   };
 
-  // Actualizar perfil
+  
   const updateProfile = (updatedUser) => {
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));

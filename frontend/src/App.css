@@ -30,18 +30,28 @@ body {
   overflow-y: auto;
 }
 
-/* Estilos generales para botones */
+/* Global responsive adjustments */
+@media (max-width: 767px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .main-content {
+    padding: 0.5rem;
+  }
+}
+
 button {
   font-family: inherit;
 }
 
-/* Estilos para inputs */
+
 input,
 textarea {
   font-family: inherit;
 }
 
-/* Scrollbar personalizada */
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
