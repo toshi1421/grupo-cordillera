@@ -17,7 +17,9 @@ const ProtectedRoute = ({ children, requiredRole = null }) => {
     return <Navigate to="/login" />;
   }
 
-  if (requiredRole && user?.rol !== requiredRole) {
+  const userRole = user?.rol || user?.role;
+
+  if (requiredRole && userRole !== requiredRole.toUpperCase()) {
     return <Navigate to="/" />;
   }
 
