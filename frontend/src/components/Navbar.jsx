@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ toggleSidebar }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -20,6 +20,9 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-menu">
+          <button className="mobile-toggle" onClick={toggleSidebar} aria-label="Abrir menú">
+            ☰
+          </button>
           {user ? (
             <>
               <span className="user-name">Hola, {user.nombre}</span>

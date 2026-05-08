@@ -3,16 +3,15 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Sidebar.css';
 
-const Sidebar = () => {
+const Sidebar = ({ sidebarOpen = true }) => {
   const { user } = useAuth();
 
-  // Solo mostrar Sidebar si es admin
   if (!user || user.rol !== 'admin') {
     return null;
   }
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
       <nav className="sidebar-nav">
         <ul>
           <li>
