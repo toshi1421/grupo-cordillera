@@ -10,7 +10,6 @@ import com.cordillera.ventas.repository.VentaRepository;
 import com.cordillera.ventas.service.VentaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +26,6 @@ public class VentaServiceImpl implements VentaService {
     private final UsuarioClient usuarioClient;
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${spring.rabbitmq.listener.simple.auto-startup:false}")
-    private boolean rabbitEnabled;
-
     @Override
     @Transactional
     public Venta crearVenta(Venta venta) {
@@ -40,19 +36,12 @@ public class VentaServiceImpl implements VentaService {
             throw new RuntimeException("No hay stock suficiente para realizar la venta");
         }
 
+     
         venta.setFecha(LocalDateTime.now());
         Venta nuevaVenta = ventaRepository.save(venta);
 
-        VentaEvent evento = new VentaEvent(
-            nuevaVenta.getId(),
-            nuevaVenta.getIdUsuario(),
-            nuevaVenta.getIdProducto(),
-            nuevaVenta.getCantidad(),
-            nuevaVenta.getTotal(),
-            nuevaVenta.getFecha()
-        );
-
-        rabbitTemplate.convertAndSend("inventario.exchange", "inventario.routing.key", evento);
+      
+        enviarEventoRabbit(nuevaVenta);
 
         return nuevaVenta;
     }
@@ -60,22 +49,38 @@ public class VentaServiceImpl implements VentaService {
     @Override
     @Transactional
     public Venta procesarVenta(VentaSolicitud solicitud) {
+       
         usuarioClient.obtenerUsuarioPorId(solicitud.getIdUsuario());
 
-        Venta nuevaVenta = new Venta();
-        nuevaVenta.setIdUsuario(solicitud.getIdUsuario());
-        nuevaVenta.setIdProducto(solicitud.getIdProducto());
-        nuevaVenta.setCantidad(solicitud.getCantidad());
-        nuevaVenta.setTotal(solicitud.getTotal());
+        Venta venta = new Venta();
+        venta.setIdUsuario(solicitud.getIdUsuario());
+        venta.setIdProducto(solicitud.getIdProducto());
+        venta.setCantidad(solicitud.getCantidad());
+        venta.setTotal(solicitud.getTotal());
+        venta.setFecha(LocalDateTime.now());
 
-        Venta ventaGuardada = ventaRepository.save(nuevaVenta);
+        Venta ventaGuardada = ventaRepository.save(venta);
 
-        if (rabbitEnabled) {
-            String mensaje = solicitud.getIdProducto() + ":" + solicitud.getCantidad();
-            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY, mensaje);
-        }
+        enviarEventoRabbit(ventaGuardada);
 
         return ventaGuardada;
+    }
+
+    private void enviarEventoRabbit(Venta venta) {
+        VentaEvent evento = new VentaEvent(
+            venta.getId(),
+            venta.getIdUsuario(),
+            venta.getIdProducto(),
+            venta.getCantidad(),
+            venta.getTotal(),
+            venta.getFecha()
+        );
+
+        rabbitTemplate.convertAndSend(
+            RabbitMQConfig.EXCHANGE, 
+            RabbitMQConfig.ROUTING_KEY, 
+            evento
+        );
     }
 
     @Override
