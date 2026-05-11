@@ -42,6 +42,11 @@ public class UsuarioController {
         return service.guardarUsuario(usuario);
     }
 
+    @PostMapping("/register")
+    public Usuario register(@Valid @RequestBody Usuario usuario) {
+        return service.guardarUsuario(usuario);
+    }
+
     @PostMapping("/login")
     public Map<String, String> login(@Valid @RequestBody LoginRequest request) {
         String token = service.login(request.getEmail(), request.getPassword());
