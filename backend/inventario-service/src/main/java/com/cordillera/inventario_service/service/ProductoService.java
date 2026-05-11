@@ -75,7 +75,7 @@ public class ProductoService {
 	@Transactional
 	public void descontarStock(Long id, Integer cantidad) {
 		Producto producto = productoRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+				.orElseThrow(() -> new RuntimeException("Producto no encontrado: " + id));
 
 		if (producto.getCantidad() < cantidad) {
 			throw new StockInsuficienteException(producto.getNombre(), cantidad, producto.getCantidad());
