@@ -1,16 +1,16 @@
 package com.cordillera.usuario_service.controller;
 
-import com.cordillera.usuario_service.dto.RoleUpdateRequest;
+import com.cordillera.usuario_service.dto.LoginRequest;
 import com.cordillera.usuario_service.model.Usuario;
 import com.cordillera.usuario_service.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/auth")
 public class AuthController {
 
     private final UsuarioService service;
@@ -19,37 +19,15 @@ public class AuthController {
         this.service = service;
     }
 
-    @PostMapping
-    public Usuario crearUsuario(@Valid @RequestBody Usuario usuario) {
-        return service.guardarUsuario(usuario);
+    @PostMapping("/register")
+    public ResponseEntity<Usuario> register(@Valid @RequestBody Usuario usuario) {
+        Usuario usuarioCreado = service.guardarUsuario(usuario);
+        return ResponseEntity.ok(usuarioCreado);
     }
 
-    @GetMapping
-    public List<Usuario> obtenerUsuarios() {
-        return service.obtenerUsuarios();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Usuario> obtenerUsuario(@PathVariable Long id) {
-        Usuario usuario = service.obtenerPorId(id);
-        return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @Valid @RequestBody Usuario usuario) {
-        Usuario actualizado = service.actualizarUsuario(id, usuario);
-        return actualizado != null ? ResponseEntity.ok(actualizado) : ResponseEntity.notFound().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
-        service.eliminarUsuario(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{id}/rol")
-    public ResponseEntity<Usuario> actualizarRol(@PathVariable Long id, @Valid @RequestBody RoleUpdateRequest request) {
-        Usuario usuario = service.actualizarRol(id, request.getRol());
-        return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
+        String token = service.login(request.getEmail(), request.getPassword());
+        return ResponseEntity.ok(Map.of("token", token));
     }
 }
