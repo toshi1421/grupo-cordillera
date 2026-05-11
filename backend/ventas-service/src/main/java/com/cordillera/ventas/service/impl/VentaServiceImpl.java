@@ -3,7 +3,6 @@ package com.cordillera.ventas.service.impl;
 import com.cordillera.ventas.clients.InventarioClient;
 import com.cordillera.ventas.clients.UsuarioClient;
 import com.cordillera.ventas.config.RabbitMQConfig;
-import com.cordillera.ventas.dto.VentaEvent;
 import com.cordillera.ventas.dto.VentaSolicitud;
 import com.cordillera.ventas.model.Venta;
 import com.cordillera.ventas.repository.VentaRepository;
@@ -67,19 +66,12 @@ public class VentaServiceImpl implements VentaService {
     }
 
     private void enviarEventoRabbit(Venta venta) {
-        VentaEvent evento = new VentaEvent(
-            venta.getId(),
-            venta.getIdUsuario(),
-            venta.getIdProducto(),
-            venta.getCantidad(),
-            venta.getTotal(),
-            venta.getFecha()
-        );
+        String mensaje = venta.getIdProducto() + ":" + venta.getCantidad();
 
         rabbitTemplate.convertAndSend(
-            RabbitMQConfig.EXCHANGE, 
-            RabbitMQConfig.ROUTING_KEY, 
-            evento
+            RabbitMQConfig.EXCHANGE,
+            RabbitMQConfig.ROUTING_KEY,
+            mensaje
         );
     }
 
