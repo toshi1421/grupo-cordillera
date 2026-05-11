@@ -15,7 +15,9 @@ public class Usuario {
     @Column(unique = true, nullable = false)
     private String nombreUsuario; 
 
+    @Column(unique = true, nullable = false)
     private String email;
+    
     
     @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

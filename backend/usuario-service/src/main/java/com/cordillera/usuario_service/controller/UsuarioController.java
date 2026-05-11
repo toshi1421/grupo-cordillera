@@ -1,15 +1,13 @@
 package com.cordillera.usuario_service.controller;
 
-import com.cordillera.usuario_service.dto.LoginRequest;
 import com.cordillera.usuario_service.dto.RoleUpdateRequest;
 import com.cordillera.usuario_service.model.Usuario;
 import com.cordillera.usuario_service.service.UsuarioService;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -37,24 +35,21 @@ public class UsuarioController {
         return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/api/autenticacion/registro")
-    public Usuario registrar(@Valid @RequestBody Usuario usuario) {
-        return service.guardarUsuario(usuario);
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable Long id, @Valid @RequestBody Usuario usuario) {
+        Usuario actualizado = service.actualizarUsuario(id, usuario);
+        return actualizado != null ? ResponseEntity.ok(actualizado) : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/register")
-    public Usuario register(@Valid @RequestBody Usuario usuario) {
-        return service.guardarUsuario(usuario);
-    }
-
-    @PostMapping("/login")
-    public Map<String, String> login(@Valid @RequestBody LoginRequest request) {
-        String token = service.login(request.getEmail(), request.getPassword());
-        return Map.of("token", token);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
+        service.eliminarUsuario(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/rol")
-    public Usuario actualizarRol(@PathVariable Long id, @Valid @RequestBody RoleUpdateRequest request) {
-        return service.actualizarRol(id, request.getRol());
+    public ResponseEntity<Usuario> actualizarRol(@PathVariable Long id, @Valid @RequestBody RoleUpdateRequest request) {
+        Usuario usuario = service.actualizarRol(id, request.getRol());
+        return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
     }
 }
