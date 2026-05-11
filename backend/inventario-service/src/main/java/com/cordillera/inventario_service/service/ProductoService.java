@@ -1,9 +1,9 @@
 package com.cordillera.inventario_service.service;
 
 import com.cordillera.inventario_service.dto.ProductoDTO;
+import com.cordillera.inventario_service.exception.StockInsuficienteException;
 import com.cordillera.inventario_service.model.Producto;
 import com.cordillera.inventario_service.repository.ProductoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,8 +14,11 @@ import java.util.stream.Collectors;
 @Service
 public class ProductoService {
 
-	@Autowired
-	private ProductoRepository productoRepository;
+	private final ProductoRepository productoRepository;
+
+	public ProductoService(ProductoRepository productoRepository) {
+		this.productoRepository = productoRepository;
+	}
 
 	public ProductoDTO crearProducto(ProductoDTO productoDTO) {
 		Producto producto = new Producto(
@@ -75,7 +78,7 @@ public class ProductoService {
 				.orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
 		if (producto.getCantidad() < cantidad) {
-			throw new RuntimeException("Stock insuficiente para el producto: " + id);
+			throw new StockInsuficienteException(producto.getNombre(), cantidad, producto.getCantidad());
 		}
 
 		producto.setCantidad(producto.getCantidad() - cantidad);
