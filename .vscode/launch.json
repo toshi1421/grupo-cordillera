@@ -1,1 +1,14 @@
-{}
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-InventarioServiceApplication<inventario-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.cordillera.inventario_service.InventarioServiceApplication",
+            "projectName": "inventario-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
