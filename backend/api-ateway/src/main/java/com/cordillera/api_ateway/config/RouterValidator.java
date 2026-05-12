@@ -10,8 +10,7 @@ public class RouterValidator {
 
     private static final List<String> PUBLIC_ROUTES = List.of(
             "/usuarios/auth/login",      
-            "/usuarios/auth/registro", 
-            "auth/**",       
+            "/usuarios/auth/registro",     
             "/actuator/**"    
     );
 
