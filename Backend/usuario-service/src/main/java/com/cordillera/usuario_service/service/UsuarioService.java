@@ -48,20 +48,43 @@ public class UsuarioService {
     }
 
     public String login(String email, String password) {
-        if (email == null || email.isBlank() || password == null || password.isBlank()) {
-            throw new BadCredentialsException("Credenciales incorrectas");
-        }
         Usuario usuario = repositorio.findByEmail(email);
+      
         if (usuario == null || !encriptador.matches(password, usuario.getContrasena())) {
             throw new BadCredentialsException("Credenciales incorrectas");
         }
         return jwtUtil.generarToken(usuario.getEmail(), usuario.getRol());
     }
 
+    public Usuario actualizarUsuario(Long id, Usuario usuarioActualizado) {
+        Optional<Usuario> opt = repositorio.findById(id);
+        if (opt.isEmpty()) {
+            throw new UsuarioNotFoundException(id);
+        }
+        Usuario usuario = opt.get();
+        if (usuarioActualizado.getNombreUsuario() != null && !usuarioActualizado.getNombreUsuario().isBlank()) {
+            usuario.setNombreUsuario(usuarioActualizado.getNombreUsuario());
+        }
+        if (usuarioActualizado.getEmail() != null && !usuarioActualizado.getEmail().isBlank()) {
+            usuario.setEmail(usuarioActualizado.getEmail());
+        }
+        if (usuarioActualizado.getContrasena() != null && !usuarioActualizado.getContrasena().isBlank()) {
+            usuario.setContrasena(encriptador.encode(usuarioActualizado.getContrasena()));
+        }
+        return repositorio.save(usuario);
+    }
+
+    public void eliminarUsuario(Long id) {
+        if (!repositorio.existsById(id)) {
+            throw new UsuarioNotFoundException(id);
+        }
+        repositorio.deleteById(id);
+    }
+
     public Usuario actualizarRol(Long id, String rol) {
         Optional<Usuario> opt = repositorio.findById(id);
         if (opt.isEmpty()) {
-            throw new IllegalArgumentException("Usuario no encontrado");
+            throw new UsuarioNotFoundException(id);
         }
         Usuario usuario = opt.get();
         usuario.setRol(rol);
