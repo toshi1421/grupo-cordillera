@@ -1,0 +1,180 @@
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #D9E1F1; 
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.login-card {
+  background-color: #FFFFFF;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+.titulo-corporativo {
+  color: #192338; 
+  margin: 0;
+  font-size: 26px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.subtitulo-monitoreo {
+  color: #31487A;
+  font-size: 14px;
+  margin-top: 5px;
+  text-align: center;
+}
+
+.login-form {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: #192338;
+  font-size: 14px;
+}
+
+.input-group input {
+  padding: 12px;
+  border: 1.5px solid #8FB3E2; 
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: 0.3s;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 48px; /* espacio para el ícono */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #192338;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.toggle-password:hover {
+  background-color: rgba(25,35,56,0.06);
+}
+
+.input-group input:focus {
+  border-color: #1E2E4F;
+}
+
+.input-error {
+  border-color: #d32f2f !important;
+}
+
+.btn-acceso {
+  background-color: #192338;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-acceso:hover {
+  background-color: #1E2E4F;
+}
+
+.btn-acceso:disabled {
+  background-color: #8FB3E2;
+  cursor: not-allowed;
+}
+
+.mensaje-error {
+  color: #d32f2f;
+  font-size: 13px;
+  background-color: #ffebee;
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+  margin: 0;
+}
+
+.login-footer {
+  margin-top: 20px;
+  font-size: 13px;
+  text-align: center;
+  color: #31487A;
+}
+
+.link {
+  color: #8FB3E2;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 25px 15px;
+  }
+  .titulo-corporativo {
+    font-size: 22px;
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 25px 0;
+  color: #8FB3E2;
+  font-weight: 600;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: #8FB3E2;
+}
+
+.google-login-container {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.google-login-container > div {
+  width: 100%;
+}

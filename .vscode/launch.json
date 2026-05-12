@@ -19,6 +19,26 @@
             "projectName": "usuario-service",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-InventarioServiceApplication<inventario-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.cordillera.inventario_service.InventarioServiceApplication",
+            "projectName": "inventario-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-VentasServiceApplication<ventas-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.cordillera.ventas.VentasServiceApplication",
+            "projectName": "ventas-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
