@@ -6,7 +6,6 @@ import com.cordillera.usuario_service.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 
 @RestController
@@ -21,8 +20,7 @@ public class AuthController {
 
     @PostMapping("/registro")
     public ResponseEntity<Usuario> register(@Valid @RequestBody Usuario usuario) {
-        Usuario usuarioCreado = service.guardarUsuario(usuario);
-        return ResponseEntity.ok(usuarioCreado);
+        return ResponseEntity.ok(service.guardarUsuario(usuario));
     }
 
     @PostMapping("/login")
