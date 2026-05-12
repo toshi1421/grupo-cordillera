@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/usuarios")
 public class AuthController {
 
     private final UsuarioService service;
@@ -19,7 +19,7 @@ public class AuthController {
         this.service = service;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/registro")
     public ResponseEntity<Usuario> register(@Valid @RequestBody Usuario usuario) {
         Usuario usuarioCreado = service.guardarUsuario(usuario);
         return ResponseEntity.ok(usuarioCreado);
