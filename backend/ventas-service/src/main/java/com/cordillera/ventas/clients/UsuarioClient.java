@@ -7,6 +7,7 @@ import com.cordillera.ventas.dto.UsuarioDTO;
 
 @FeignClient(name = "usuarios-service", url = "http://localhost:8081/usuarios")
 public interface UsuarioClient {
+
     @GetMapping("/{id}")
     UsuarioDTO obtenerUsuarioPorId(@PathVariable("id") Long id);
 }
