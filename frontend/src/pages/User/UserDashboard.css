@@ -1,0 +1,40 @@
+
+.user-dashboard {
+  padding: 2rem;
+}
+
+.user-dashboard h1 {
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+.user-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.user-stat-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.user-stat-card h3 {
+  margin: 0 0 0.75rem 0;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.user-stat-number {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.user-dashboard-note {
+  margin-top: 1.25rem;
+  color: #6b7280;
+}

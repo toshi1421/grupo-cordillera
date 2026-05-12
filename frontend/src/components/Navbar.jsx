@@ -16,7 +16,7 @@ const Navbar = ({ toggleSidebar }) => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-brand">
-          <h1>Cordillera Shop</h1>
+          <h1>Grupo Cordillera</h1>
         </div>
 
         <div className="navbar-menu">
@@ -25,7 +25,7 @@ const Navbar = ({ toggleSidebar }) => {
           </button>
           {user ? (
             <>
-              <span className="user-name">Hola, {user.nombre}</span>
+              <span className="user-name">Hola, {user.nombreUsuario || user.nombre || 'Usuario'}</span>
               <button className="logout-btn" onClick={handleLogout}>
                 Cerrar sesión
               </button>

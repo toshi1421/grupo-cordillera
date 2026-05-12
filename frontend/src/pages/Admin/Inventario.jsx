@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import productoService from '../../services/productoService';
+import { useAuth } from '../../context/AuthContext';
 import './Inventario.css';
 
 const Inventario = () => {
+  const { user } = useAuth();
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,6 +16,9 @@ const Inventario = () => {
     precio: '',
     stock: '',
   });
+
+  const role = (user?.rol || '').toUpperCase();
+  const canManage = role === 'ADMIN';
 
   useEffect(() => {
     fetchProductos();
@@ -34,12 +39,14 @@ const Inventario = () => {
   };
 
   const handleAddClick = () => {
+    if (!canManage) return;
     setShowForm(true);
     setEditingId(null);
     setFormData({ nombre: '', descripcion: '', precio: '', stock: '' });
   };
 
   const handleEditClick = (producto) => {
+    if (!canManage) return;
     setEditingId(producto.id);
     setShowForm(true);
     setFormData({
@@ -52,6 +59,7 @@ const Inventario = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!canManage) return;
     try {
       if (editingId) {
         await productoService.updateProducto(editingId, formData);
@@ -68,6 +76,7 @@ const Inventario = () => {
   };
 
   const handleDelete = async (id) => {
+    if (!canManage) return;
     if (window.confirm('¿Está seguro de que desea eliminar este producto?')) {
       try {
         await productoService.deleteProducto(id);
@@ -86,15 +95,17 @@ const Inventario = () => {
   return (
     <div className="inventario">
       <div className="header">
-        <h1>Gestionar Inventario</h1>
-        <button className="btn-primary" onClick={handleAddClick}>
-          + Agregar Producto
-        </button>
+        <h1>{canManage ? 'Gestionar Inventario' : 'Inventario'}</h1>
+        {canManage && (
+          <button className="btn-primary" onClick={handleAddClick}>
+            + Agregar Producto
+          </button>
+        )}
       </div>
 
       {error && <div className="error">{error}</div>}
 
-      {showForm && (
+      {canManage && showForm && (
         <div className="form-container">
           <form onSubmit={handleSubmit}>
             <h2>{editingId ? 'Editar' : 'Nuevo'} Producto</h2>
@@ -150,7 +161,7 @@ const Inventario = () => {
             <th>Descripción</th>
             <th>Precio</th>
             <th>Stock</th>
-            <th>Acciones</th>
+            {canManage && <th>Acciones</th>}
           </tr>
         </thead>
         <tbody>
@@ -160,20 +171,22 @@ const Inventario = () => {
               <td>{producto.descripcion?.substring(0, 50)}...</td>
               <td>${producto.precio}</td>
               <td>{producto.stock}</td>
-              <td>
-                <button
-                  className="btn-edit"
-                  onClick={() => handleEditClick(producto)}
-                >
-                  Editar
-                </button>
-                <button
-                  className="btn-delete"
-                  onClick={() => handleDelete(producto.id)}
-                >
-                  Eliminar
-                </button>
-              </td>
+              {canManage && (
+                <td>
+                  <button
+                    className="btn-edit"
+                    onClick={() => handleEditClick(producto)}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    className="btn-delete"
+                    onClick={() => handleDelete(producto.id)}
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
@@ -184,3 +197,5 @@ const Inventario = () => {
 };
 
 export default Inventario;
+
+

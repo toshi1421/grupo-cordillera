@@ -1,31 +1,45 @@
+
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Sidebar.css';
 
 const Sidebar = ({ sidebarOpen = true }) => {
   const { user } = useAuth();
 
-  if (!user || user.rol !== 'admin') {
+  const role = (user?.rol || '').toUpperCase();
+
+  if (!user) {
     return null;
   }
+
+  const userLinks = [
+    { to: '/usuario', label: 'Inicio' },
+    { to: '/inventario', label: 'Inventario' },
+    { to: '/perfil', label: 'Perfil' },
+    { to: '/soporte', label: 'Soporte' },
+  ];
+
+  const adminLinks = [
+    { to: '/dashboard', label: 'Panel de Control' },
+    { to: '/inventario', label: 'Gestionar Inventario' },
+    { to: '/admin/usuarios', label: 'Gestion de Usuarios' },
+    { to: '/admin/logs', label: 'Logs del Sistema' },
+  ];
+
+  const links = role === 'ADMIN' ? adminLinks : userLinks;
 
   return (
     <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
       <nav className="sidebar-nav">
         <ul>
-          <li>
-            <Link to="/admin/dashboard">Dashboard</Link>
-          </li>
-          <li>
-            <Link to="/admin/inventario">Gestionar Inventario</Link>
-          </li>
-          <li>
-            <Link to="/admin/ventas">Ver Ventas</Link>
-          </li>
-          <li>
-            <Link to="/admin/usuarios">Gestionar Usuarios</Link>
-          </li>
+          {links.map((link) => (
+            <li key={link.to}>
+              <NavLink to={link.to} className={({ isActive }) => (isActive ? 'active' : '')}>
+                {link.label}
+              </NavLink>
+            </li>
+          ))}
         </ul>
       </nav>
     </aside>

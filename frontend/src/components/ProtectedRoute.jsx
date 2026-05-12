@@ -2,7 +2,11 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const ProtectedRoute = ({ children, requiredRole = null }) => {
+const getUserRole = (user) => (user?.rol || '').toUpperCase();
+
+const getDefaultRouteByRole = (role) => (role === 'ADMIN' ? '/dashboard' : '/usuario');
+
+const ProtectedRoute = ({ children, allowedRoles }) => {
   const { isAuthenticated, loading, user } = useAuth();
 
   if (loading) {
@@ -13,14 +17,15 @@ const ProtectedRoute = ({ children, requiredRole = null }) => {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+  if (!isAuthenticated && !localStorage.getItem('authToken')) {
+    return <Navigate to="/login" replace />;
   }
 
-  const userRole = user?.rol || user?.role;
-
-  if (requiredRole && userRole !== requiredRole.toUpperCase()) {
-    return <Navigate to="/" />;
+  if (allowedRoles && allowedRoles.length > 0) {
+    const role = getUserRole(user);
+    if (!allowedRoles.includes(role)) {
+      return <Navigate to={getDefaultRouteByRole(role)} replace />;
+    }
   }
 
   return children;
