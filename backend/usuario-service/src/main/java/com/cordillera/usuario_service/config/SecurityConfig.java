@@ -25,19 +25,23 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+ @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/usuarios/login").permitAll()
-                .requestMatchers("/usuarios/register").permitAll()
-                .requestMatchers("/api/autenticacion/**").permitAll()
-                .requestMatchers("/usuarios/api/autenticacion/**").permitAll()
+               
+                .requestMatchers("/usuarios/login", "/usuarios/registro", "/usuarios/register").permitAll()
+                
+                .requestMatchers("/api/usuarios/login", "/api/usuarios/registro").permitAll()
+                
+                .requestMatchers("/api/autenticacion/**", "/usuarios/api/autenticacion/**").permitAll()
+                
                 .requestMatchers(HttpMethod.GET, "/usuarios/{id}").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/usuarios/{id}/rol").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
+                
                 .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated()
             )
