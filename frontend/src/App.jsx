@@ -15,7 +15,7 @@ import Support from './pages/Common/Support';
 import Dashboard from './pages/Admin/Dashboard';
 import Inventario from './pages/Admin/Inventario';
 import UsersManagement from './pages/Admin/UsersManagement';
-import SystemLogs from './pages/Admin/SystemLogs';
+import SystemLogs from './pages/Admin/System';
 
 import './App.css';
 
