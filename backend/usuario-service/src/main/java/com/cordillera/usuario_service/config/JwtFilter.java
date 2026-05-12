@@ -24,25 +24,35 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        
+        String path = request.getRequestURI();
+
+        if (path.contains("/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
 
-            if (!jwtUtil.validarToken(token)) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
+            try {
+                if (jwtUtil.validarToken(token)) {
+                    String email = jwtUtil.extraerEmail(token);
+                    String rol = jwtUtil.extraerRol(token);
+
+                    SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + rol);
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(email, null, Collections.singletonList(authority));
+
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            } catch (Exception e) {
+                SecurityContextHolder.clearContext();
             }
-
-            String email = jwtUtil.extraerEmail(token);
-            String rol = jwtUtil.extraerRol(token);
-
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + rol);
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(email, null, Collections.singletonList(authority));
-
-            SecurityContextHolder.getContext().setAuthentication(authToken);
         }
+        
         filterChain.doFilter(request, response);
     }
 }
