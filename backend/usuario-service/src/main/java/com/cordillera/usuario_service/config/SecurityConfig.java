@@ -33,13 +33,12 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
         
-                .requestMatchers("/usuarios/auth/login", "/usuarios/auth/registro", "/register").permitAll()
+                .requestMatchers("/usuarios/auth/**").permitAll()
                 .requestMatchers("/error").permitAll()
                 
-                .requestMatchers(HttpMethod.GET, "/{id}").permitAll() 
-                
-                .requestMatchers(HttpMethod.PUT, "/{id}/rol").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/").hasRole("ADMIN") 
+                .requestMatchers(HttpMethod.GET, "/usuarios/{id}").permitAll() 
+                .requestMatchers(HttpMethod.PUT, "/usuarios/{id}/rol").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/usuarios/").hasRole("ADMIN") 
                 
                 .anyRequest().authenticated()
             )
