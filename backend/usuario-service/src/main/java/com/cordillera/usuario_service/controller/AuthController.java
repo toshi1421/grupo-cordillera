@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/usuarios/auth")
 public class AuthController {
 
     private final UsuarioService service;
@@ -19,13 +19,13 @@ public class AuthController {
         this.service = service;
     }
 
-    @PostMapping("/auth/registro")
+    @PostMapping("/registro")
     public ResponseEntity<Usuario> register(@Valid @RequestBody Usuario usuario) {
         Usuario usuarioCreado = service.guardarUsuario(usuario);
         return ResponseEntity.ok(usuarioCreado);
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest request) {
         String token = service.login(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(Map.of("token", token));
