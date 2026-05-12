@@ -11,10 +11,8 @@ public class RouterValidator {
     private static final List<String> PUBLIC_ROUTES = List.of(
             "/usuarios/auth/login",      
             "/usuarios/auth/registro", 
-            "auth/**",  
-            "/usuarios/save",       
-            "/actuator/**",       
-            "/productos/**" 
+            "auth/**",       
+            "/actuator/**"    
     );
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
