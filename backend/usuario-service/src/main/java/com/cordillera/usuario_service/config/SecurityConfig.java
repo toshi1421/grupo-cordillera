@@ -29,14 +29,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                
-                .requestMatchers("/usuarios/login", "/usuarios/registro", "/usuarios/registro").permitAll()
+                .requestMatchers("/auth/usuarios/login", "/auth/usuarios/registro", "/auth/usuarios/register").permitAll()
                 
                 .requestMatchers("/api/usuarios/login", "/api/usuarios/registro").permitAll()
                 
-                .requestMatchers("/api/autenticacion/**", "/usuarios/api/autenticacion/**").permitAll()
+                .requestMatchers("/api/autenticacion/**", "/auth/usuarios/api/autenticacion/**").permitAll()
                 
                 .requestMatchers(HttpMethod.GET, "/usuarios/{id}").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/usuarios/{id}/rol").hasRole("ADMIN")
