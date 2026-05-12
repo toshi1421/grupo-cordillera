@@ -25,8 +25,17 @@ public class UsuarioService {
     }
 
     public Usuario guardarUsuario(Usuario usuario) {
+        if (usuario.getNombreUsuario() == null || usuario.getNombreUsuario().isBlank()) {
+            throw new IllegalArgumentException("El nombre de usuario es obligatorio");
+        }
         if (usuario.getEmail() == null || usuario.getEmail().isBlank()) {
             throw new IllegalArgumentException("El email es obligatorio");
+        }
+        if (usuario.getContrasena() == null || usuario.getContrasena().isBlank()) {
+            throw new IllegalArgumentException("La contraseña es obligatoria");
+        }
+        if (repositorio.existsByNombreUsuario(usuario.getNombreUsuario())) {
+            throw new IllegalArgumentException("El nombre de usuario ya está registrado");
         }
         if (repositorio.existsByEmail(usuario.getEmail())) {
             throw new IllegalArgumentException("El email ya está registrado");
@@ -89,5 +98,13 @@ public class UsuarioService {
         Usuario usuario = opt.get();
         usuario.setRol(rol);
         return repositorio.save(usuario);
+    }
+
+    public Usuario obtenerPorEmail(String email) {
+        Usuario usuario = repositorio.findByEmail(email);
+        if (usuario == null) {
+            throw new com.cordillera.usuario_service.exception.UsuarioNotFoundException(email);
+        }
+        return usuario;
     }
 }
