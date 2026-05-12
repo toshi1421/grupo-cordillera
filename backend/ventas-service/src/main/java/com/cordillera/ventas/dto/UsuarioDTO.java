@@ -11,7 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UsuarioDTO {
     private Long id;
-    private String nombre;
-    private String apellido;
+    private String nombreUsuario;
+    private String contrasena;
     private String email;
+    private String rol;
 }

@@ -28,28 +28,32 @@ public class VentaServiceImpl implements VentaService {
     @Override
     @Transactional
     public Venta crearVenta(Venta venta) {
-      
-        boolean tieneStock = inventarioClient.verificarStock(venta.getIdProducto(), venta.getCantidad());
-        
-        if (!tieneStock) {
-            throw new RuntimeException("No hay stock suficiente para realizar la venta");
+        try {
+            inventarioClient.obtenerProductoPorId(venta.getIdProducto());
+        } catch (Exception e) {
+            throw new RuntimeException("Error: El producto con ID " + venta.getIdProducto() + " no existe en el inventario.");
         }
 
-     
         venta.setFecha(LocalDateTime.now());
         Venta nuevaVenta = ventaRepository.save(venta);
-
-      
         enviarEventoRabbit(nuevaVenta);
-
         return nuevaVenta;
     }
 
     @Override
     @Transactional
     public Venta procesarVenta(VentaSolicitud solicitud) {
-       
-        usuarioClient.obtenerUsuarioPorId(solicitud.getIdUsuario());
+        try {
+            usuarioClient.obtenerUsuarioPorId(solicitud.getIdUsuario());
+        } catch (Exception e) {
+            throw new RuntimeException("Error: El usuario con ID " + solicitud.getIdUsuario() + " no existe.");
+        }
+
+        try {
+            inventarioClient.obtenerProductoPorId(solicitud.getIdProducto());
+        } catch (Exception e) {
+            throw new RuntimeException("Error: El producto con ID " + solicitud.getIdProducto() + " no existe.");
+        }
 
         Venta venta = new Venta();
         venta.setIdUsuario(solicitud.getIdUsuario());
@@ -59,15 +63,12 @@ public class VentaServiceImpl implements VentaService {
         venta.setFecha(LocalDateTime.now());
 
         Venta ventaGuardada = ventaRepository.save(venta);
-
         enviarEventoRabbit(ventaGuardada);
-
         return ventaGuardada;
     }
 
     private void enviarEventoRabbit(Venta venta) {
         String mensaje = venta.getIdProducto() + ":" + venta.getCantidad();
-
         rabbitTemplate.convertAndSend(
             RabbitMQConfig.EXCHANGE,
             RabbitMQConfig.ROUTING_KEY,
@@ -90,3 +91,4 @@ public class VentaServiceImpl implements VentaService {
         return ventaRepository.findByIdUsuario(idUsuario);
     }
 }
+
