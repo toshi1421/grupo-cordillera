@@ -24,10 +24,12 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
 
+
         if (!routerValidator.isSecured(path)) {
             return chain.filter(exchange);
         }
 
+        
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
@@ -41,10 +43,12 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                 return exchange.getResponse().setComplete();
             }
         } catch (Exception e) {
+            
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
 
+        
         return chain.filter(exchange);
     }
 
