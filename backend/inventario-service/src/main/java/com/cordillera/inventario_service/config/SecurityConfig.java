@@ -18,7 +18,7 @@ public class SecurityConfig {
             .cors(cors -> {})
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-              .requestMatchers("/crear", "/buscar", "/{id}/**", "/").permitAll()
+              .requestMatchers("/productos/crear", "/productos/buscar", "/productos/{id}/**", "/productos").permitAll()
                 .requestMatchers("/error").permitAll()
                 .anyRequest().permitAll()
             );
