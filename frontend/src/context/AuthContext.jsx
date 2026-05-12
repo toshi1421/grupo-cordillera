@@ -23,10 +23,10 @@ export const AuthProvider = ({ children }) => {
  
   const login = async (email, password) => {
     try {
-      const response = await authService.login(email, password);
-      setUser(response.user);
+      const data = await authService.login(email, password);
+      setUser(data.user);
       setIsAuthenticated(true);
-      return response;
+      return data;
     } catch (error) {
       console.error('Error en login:', error);
       throw error;

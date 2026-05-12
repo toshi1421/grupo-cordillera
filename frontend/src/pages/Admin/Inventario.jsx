@@ -23,7 +23,7 @@ const Inventario = () => {
     try {
       setLoading(true);
       const data = await productoService.getProductos(0, 100);
-      setProductos(data.content || data);
+      setProductos(data);
       setError(null);
     } catch (err) {
       setError('Error al cargar los productos');
