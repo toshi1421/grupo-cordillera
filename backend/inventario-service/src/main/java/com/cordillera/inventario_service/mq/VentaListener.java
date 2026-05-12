@@ -26,7 +26,7 @@ public class VentaListener {
 
             System.out.println(">>> [RabbitMQ] Stock actualizado para el producto ID: " + productoId);
         } catch (Exception e) {
-            System.err.println("Error procesando mensaje de RabbitMQ: " + e.getMessage());
+            System.err.println("ERROR procesando mensaje de RabbitMQ: " + e.getMessage());
         }
     }
 }
