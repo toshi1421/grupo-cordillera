@@ -25,25 +25,22 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
- @Bean
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-               
-                .requestMatchers("/auth/usuarios/login", "/auth/usuarios/registro", "/auth/usuarios/register").permitAll()
-                
-                .requestMatchers("/api/usuarios/login", "/api/usuarios/registro").permitAll()
-                
-                .requestMatchers("/api/autenticacion/**", "/auth/usuarios/api/autenticacion/**").permitAll()
-                
-                .requestMatchers(HttpMethod.GET, "/usuarios/{id}").permitAll()
-                .requestMatchers(HttpMethod.PUT, "/usuarios/{id}/rol").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
-                
+        
+                .requestMatchers("/login", "/registro", "/register").permitAll()
                 .requestMatchers("/error").permitAll()
+                
+                .requestMatchers(HttpMethod.GET, "/{id}").permitAll() 
+                
+                .requestMatchers(HttpMethod.PUT, "/{id}/rol").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/").hasRole("ADMIN") 
+                
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
