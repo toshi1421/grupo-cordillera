@@ -1,8 +1,8 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext'; 
 import allowedDomains from '../../config/allowedDomains';
-import api from '../../services/api';
-import authService from '../../services/authService';
 import './Login.css';
 
 const Login = () => {
@@ -13,38 +13,49 @@ const Login = () => {
   const [cargando, setCargando] = useState(false);
 
   const navigate = useNavigate();
+  const { login, user } = useAuth(); 
 
   const manejarLogin = async (e) => {
     e.preventDefault();
     setError('');
+
     if (!email.trim() || !password.trim()) {
-      setError('Por favor, ingresa tu Gmail y contraseña.');
+      setError('Por favor, ingresa tu correo y contraseña.');
       return;
     }
 
-    const lower = email.toLowerCase();
-    const valid = allowedDomains.some((d) => lower.endsWith(d));
-    if (!valid) {
-      setError(`Por favor ingresa un correo con uno de los dominios permitidos: ${allowedDomains.join(', ')}`);
+    const lowerEmail = email.toLowerCase();
+    const esDominioValido = allowedDomains.some((dominio) => lowerEmail.endsWith(dominio));
+    
+    if (!esDominioValido) {
+      setError(`Dominio no autorizado. Use: ${allowedDomains.join(', ')}`);
       return;
     }
 
     setCargando(true);
 
     try {
-      await authService.login(email, password);
-      if (authService.isAuthenticated()) {
-        navigate('/inventario');
-      } else {
-        setError('Usuario o contraseña incorrectos. Intenta nuevamente.');
-      }
+      const data = await login(email, password);
+      const rol = (data?.usuario?.rol || data?.user?.rol || user?.rol || 'USER').toUpperCase();
+      const destino = rol === 'ADMIN' ? '/dashboard' : '/usuario';
+
+      navigate(destino, { replace: true });
+
     } catch (err) {
-      setError('Usuario o contraseña incorrectos. Intenta nuevamente.');
+      console.error("Error capturado en login:", err);
+      if (err.response && err.response.status === 401) {
+        setError('Credenciales incorrectas. Revisa tu correo o contraseña.');
+      } else if (err.code === 'ECONNABORTED') {
+        setError('El servidor tardó demasiado en responder. Verifica que los servicios estén activos.');
+      } else if (!err.response) {
+        setError('No se pudo conectar con el servidor. Revisa que API Gateway esté iniciado en puerto 8080.');
+      } else {
+        setError('Error al conectar con el servidor. Intenta más tarde.');
+      }
     } finally {
       setCargando(false);
     }
   };
-
 
   return (
     <div className="login-page">
@@ -60,10 +71,10 @@ const Login = () => {
             <input
               id="email"
               type="email"
-              placeholder="nombre@cordillera.com"
+              placeholder="usuario@cordillera.cl"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={error ? 'input-error' : ''}
+              disabled={cargando}
             />
           </div>
 
@@ -73,29 +84,17 @@ const Login = () => {
               <input
                 id="password"
                 type={mostrarPassword ? 'text' : 'password'}
-                placeholder="Ingrese su contraseña"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={error ? 'input-error' : ''}
+                disabled={cargando}
               />
               <button
                 type="button"
                 className="toggle-password"
-                onClick={() => setMostrarPassword((s) => !s)}
-                aria-label={mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                onClick={() => setMostrarPassword(!mostrarPassword)}
               >
-                {mostrarPassword ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-4.478 0-8.268-2.943-9.542-7a10.98 10.98 0 0 1 2.07-3.388" />
-                    <path d="M1 1l22 22" />
-                    <path d="M9.88 9.88a3 3 0 0 0 4.24 4.24" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M1.46 12C2.734 7.943 6.524 5 11 5s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S2.734 16.057 1.46 12z" />
-                    <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                )}
+                {mostrarPassword ? "Ocultar" : "Mostrar"}
               </button>
             </div>
           </div>
@@ -103,14 +102,13 @@ const Login = () => {
           {error && <p className="mensaje-error">{error}</p>}
 
           <button type="submit" className="btn-acceso" disabled={cargando}>
-            {cargando ? 'Verificando...' : 'Acceder al Sistema'}
+            {cargando ? 'Iniciando sesión...' : 'Acceder al Sistema'}
           </button>
         </form>
 
-        
         <footer className="login-footer">
-          <p>¿No tienes acceso? <span className="link" onClick={() => navigate('/register')}>Solicitar Registro</span></p>
-        </footer> 
+          <p>¿Necesitas una cuenta? <span className="link" onClick={() => navigate('/register')}>Registrarse</span></p>
+        </footer>
       </div>
     </div>
   );
